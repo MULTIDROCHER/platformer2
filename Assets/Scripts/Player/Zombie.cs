@@ -3,13 +3,13 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class Zombie : MonoBehaviour
 {
-    [SerializeField] private AnimationClip _leftKick;
-    [SerializeField] private AnimationClip _rightKick;
-
+    private int _leftKick = Animator.StringToHash("attackWest");
+    private int _rightKick = Animator.StringToHash("attackEast");
     private ZombieMovement _movement;
     private Animator _animator;
-    private int _damage = 10;
     private bool _isKicking = false;
+    private int _damage = 10;
+    private Npc _enemy;
 
     private void Start()
     {
@@ -19,26 +19,35 @@ public class Zombie : MonoBehaviour
 
     private void Update()
     {
-        if (_movement.IsGrounded && Input.GetMouseButtonDown(0))
-        {
-            if (_movement.Movement.x > 0)
-                Kick(_rightKick);
-            else if (_movement.Movement.x < 0)
-                Kick(_leftKick);
-        }
-
-        _isKicking = false;
-    }
-
-    private void Kick(AnimationClip animation)
-    {
-        _isKicking = true;
-        _animator.Play(animation.name);
+        if (_movement.IsGrounded
+        && Input.GetMouseButtonDown(0)
+        && _isKicking == false)
+            Kick(_movement.Movement);
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.TryGetComponent(out Npc npc) && _isKicking)
-            npc.TakeDamage(_damage);
+        other.gameObject.TryGetComponent(out _enemy);
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject == _enemy) 
+        _enemy = null;
+    }
+
+    private void Kick(Vector2 movement)
+    {
+        _isKicking = true;
+
+        if (movement.x > 0)
+            _animator.Play(_rightKick);
+        else if (movement.x < 0)
+            _animator.Play(_leftKick);
+
+        if (_enemy != null)
+            _enemy.TakeDamage(_damage);
+
+        _isKicking = false;
     }
 }

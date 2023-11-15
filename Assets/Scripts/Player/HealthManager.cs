@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +8,11 @@ public class HealthManager : MonoBehaviour
     private int _maxHealth = 100;
     private int _health;
 
+    public int Health => _health;
+
     private void Start()
     {
-        _health = _maxHealth - 20;
+        _health = _maxHealth - 90;
         ShowHealthAmount();
     }
 
@@ -37,14 +37,17 @@ public class HealthManager : MonoBehaviour
         }
     }
 
-    public void TryTakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
-        if (GetComponent<Collider>().TryGetComponent(out Heal heal)
-                && _health + heal.RecoveryAmount <= _maxHealth)
+        _health -= damage;
+
+        if (_health <= 0)
         {
-            _health += heal.RecoveryAmount;
-            Destroy(heal.gameObject);
-            ShowHealthAmount();
+            Debug.Log("player is dead!!!");
+            _health = 0;
+            Destroy(gameObject);
         }
+
+        ShowHealthAmount();
     }
 }

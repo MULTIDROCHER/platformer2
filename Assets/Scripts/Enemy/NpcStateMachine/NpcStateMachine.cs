@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class NpcStateMachine
 {
     public State CurrentState { get; private set; }
