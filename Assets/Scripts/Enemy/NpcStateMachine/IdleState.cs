@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class IdleState : State
 {
-    private Npc _npc;
-    private Transform _path;
+    private readonly Npc _npc;
+    private readonly Transform _path;
 
     private Transform[] _pathPoints;
     private int _currentPoint;
@@ -47,9 +45,7 @@ public class IdleState : State
         _pathPoints = new Transform[_path.childCount];
 
         for (int i = 0; i < _path.childCount; i++)
-        {
             _pathPoints[i] = _path.GetChild(i);
-        }
     }
 
     private int FindNearestPointIndex()

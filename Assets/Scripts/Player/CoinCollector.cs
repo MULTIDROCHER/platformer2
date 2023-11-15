@@ -12,10 +12,10 @@ public class CoinCollector : MonoBehaviour
     {
         if (collider.GetComponent<Coin>())
         {
-            _audioSource.PlayOneShot(_audioSource.clip);
-            Destroy(collider.gameObject);
             _coins++;
             ShowCoinsAmount();
+            Destroy(collider.gameObject);
+            _audioSource.PlayOneShot(_audioSource.clip);
         }
     }
 

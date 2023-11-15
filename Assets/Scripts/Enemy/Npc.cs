@@ -3,21 +3,23 @@ using UnityEngine;
 public class Npc : MonoBehaviour
 {
     [SerializeField] private Transform _path;
-    private NpcStateMachine _stateMachine = new NpcStateMachine();
+
+    private readonly NpcStateMachine _stateMachine = new NpcStateMachine();
+    private readonly float _speed = 3;
+    
     private IdleState _idleState;
     private PlayerDetector _playerDetector;
     private ZombieDamager _damager;
     private int _health = 50;
-    private float _speed = 3;
+    
     public float Speed => _speed;
-    public string text;
 
     private void Awake()
     {
         _playerDetector = transform.GetComponentInChildren<PlayerDetector>();
         TryGetComponent(out _damager);
 
-        _idleState = new IdleState(this, _path);
+        _idleState = new(this, _path);
         _stateMachine.Initialize(_idleState);
     }
 
@@ -51,21 +53,18 @@ public class Npc : MonoBehaviour
 
     public void StartChasing(Zombie player)
     {
-        ChaseState chasing = new ChaseState(this, player);
-        text = "chasing";
+        ChaseState chasing = new(this, player);
         _stateMachine.ChangeState(chasing);
     }
 
     public void GoToIdle()
     {
         _damager.enabled = false;
-        text = "idle";
         _stateMachine.ChangeState(_idleState);
     }
 
-    public void Attack(Zombie player)
+    public void Attack()
     {
-        text = "attack";
         _damager.enabled = true;
     }
 

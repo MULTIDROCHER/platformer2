@@ -1,13 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class ZombieDamager : MonoBehaviour
 {
+    private readonly int _damage = 5;
+    private readonly float _delay = 1;
+    
     private HealthManager _player;
-    private int _damage = 5;
-    private float _delay = 1;
     private bool _canDamage = false;
     private WaitForSeconds _waitForSeconds;
 
@@ -23,7 +23,6 @@ public class ZombieDamager : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out HealthManager healthManager))
         {
-            Debug.Log("can hit");
             _player = healthManager;
             _canDamage = true;
             StartCoroutine(Attack(_player));
@@ -34,7 +33,6 @@ public class ZombieDamager : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out HealthManager healthManager) || other == null)
         {
-            Debug.Log("not hit");
             _canDamage = false;
             StopCoroutine(Attack(_player));
             _player = null;
@@ -47,15 +45,10 @@ public class ZombieDamager : MonoBehaviour
         {
             player.TakeDamage(_damage);
 
-            Debug.Log("hit");
             yield return _waitForSeconds;
 
             if (_player == null || _player.Health <= 0)
-            {
-
-                Debug.Log("ended corout");
                 PlayerDead?.Invoke();
-            }
         }
     }
 }

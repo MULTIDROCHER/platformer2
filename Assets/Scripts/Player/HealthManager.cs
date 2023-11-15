@@ -5,14 +5,14 @@ public class HealthManager : MonoBehaviour
 {
     [SerializeField] private Text _healthText;
 
-    private int _maxHealth = 100;
-    private int _health;
+    private const int MaxHealth = 100;
+    private int _currentHealth;
 
-    public int Health => _health;
+    public int Health => _currentHealth;
 
     private void Start()
     {
-        _health = _maxHealth - 90;
+        _currentHealth = MaxHealth;
         ShowHealthAmount();
     }
 
@@ -23,15 +23,15 @@ public class HealthManager : MonoBehaviour
 
     private void ShowHealthAmount()
     {
-        _healthText.text = _health.ToString();
+        _healthText.text = _currentHealth.ToString();
     }
 
     private void TryTakeHeal(Collider2D collider)
     {
         if (collider.TryGetComponent(out Heal heal)
-        && _health + heal.RecoveryAmount <= _maxHealth)
+        && _currentHealth + heal.RecoveryAmount <= MaxHealth)
         {
-            _health += heal.RecoveryAmount;
+            _currentHealth += heal.RecoveryAmount;
             Destroy(heal.gameObject);
             ShowHealthAmount();
         }
@@ -39,12 +39,12 @@ public class HealthManager : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        _health -= damage;
+        _currentHealth -= damage;
 
-        if (_health <= 0)
+        if (_currentHealth <= 0)
         {
             Debug.Log("player is dead!!!");
-            _health = 0;
+            _currentHealth = 0;
             Destroy(gameObject);
         }
 
